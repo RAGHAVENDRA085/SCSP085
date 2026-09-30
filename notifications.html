@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notification-item {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            animation: slideInLeft 0.5s ease;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .notification-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .notification-item.unread {
+            background: #f0f8ff;
+            border-left-color: #23d5ab;
+        }
+
+        .notification-item.test {
+            border-left-color: #f093fb;
+        }
+
+        .notification-item.company {
+            border-left-color: #ffc107;
+        }
+
+        .notification-item.attendance {
+            border-left-color: #667eea;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .notification-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .notification-message {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-notifications i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-clear {
+            background: #f5576c;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bell" style="color: #667eea;"></i> Notifications</h1>
+            <div>
+                <button class="btn btn-clear" onclick="clearAllNotifications()" style="margin-right: 10px;">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+                <button class="btn btn-back" onclick="window.location.href='student-profile.html'">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <div class="notification-card">
+            <div id="notificationsList">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser;
+
+        window.onload = function() {
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+            loadNotifications();
+        };
+
+        function loadNotifications() {
+            const notifications = JSON.parse(localStorage.getItem('notifications_' + currentUser.email) || '[]');
+            const container = document.getElementById('notificationsList');
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="no-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>No Notifications</h3>
+                        <p>You're all caught up! No new notifications.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by timestamp (newest first)
+            notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            container.innerHTML = notifications.map((notif, index) => {
+                const date = new Date(notif.timestamp);
+                const timeAgo = getTimeAgo(date);
+                const unreadClass = notif.read ? '' : 'unread';
+                const iconClass = getIconClass(notif.type);
+                const icon = getIcon(notif.type);
+
+                return `
+                    <div class="notification-item ${unreadClass} ${notif.type}" onclick="markAsRead(${index})">
+                        <div class="notification-header">
+                            <div>
+                                <span class="notification-icon" style="background: ${iconClass}">
+                                    <i class="fas ${icon}"></i>
+                                </span>
+                                <span class="notification-title">${escapeNotificationHtml(notif.title)}</span>
+                            </div>
+                            <span class="notification-time">${timeAgo}</span>
+                        </div>
+                        <div class="notification-message">${escapeNotificationHtml(notif.message)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getIconClass(type) {
+            const colors = {
+                'test': '#f093fb',
+                'company': '#ffc107',
+                'attendance': '#667eea',
+                'result': '#23d5ab',
+                'general': '#667eea'
+            };
+            return colors[type] || colors['general'];
+        }
+
+        function getIcon(type) {
+            const icons = {
+                'test': 'fa-clipboard-list',
+                'company': 'fa-building',
+                'attendance': 'fa-qrcode',
+                'result': 'fa-chart-line',
+                'general': 'fa-info-circle'
+            };
+            return icons[type] || icons['general'];
+        }
+
+        function escapeNotificationHtml(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[character]));
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        async function markAsRead(index) {
+            const notifications = JSON.parse(localStorage.getItem('notifications_' + currentUser.email) || '[]');
+            if (notifications[index]) {
+                try {
+                    await CampusAPI.request('/api/notifications/read', {
+                        method: 'PATCH',
+                        body: { id: notifications[index].id }
+                    });
+                    notifications[index].read = true;
+                    localStorage.setItem('notifications_' + currentUser.email, JSON.stringify(notifications));
+                    loadNotifications();
+                } catch (error) {
+                    CampusAPI.reportError(error);
+                }
+            }
+        }
+
+        async function clearAllNotifications() {
+            if (confirm('Are you sure you want to clear all notifications?')) {
+                try {
+                    await CampusAPI.request('/api/notifications', { method: 'DELETE' });
+                    localStorage.removeItem('notifications_' + currentUser.email);
+                    loadNotifications();
+                } catch (error) {
+                    CampusAPI.reportError(error);
+                }
+            }
+        }
+
+        // Create sample notifications for demo
+        function createSampleNotifications() {
+            const samples = [
+                {
+                    title: 'Test Scheduled',
+                    message: 'Data Structures test scheduled for tomorrow at 10:00 AM',
+                    type: 'test',
+                    timestamp: new Date(Date.now() - 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    title: 'Company Visit',
+                    message: 'Google will be visiting campus on September 25, 2026 for placements',
+                    type: 'company',
+                    timestamp: new Date(Date.now() - 86400000).toISOString(),
+                    read: false
+                },
+                {
+                    title: 'Attendance Marked',
+                    message: 'Successfully marked attendance for Computer Networks (CSE-A)',
+                    type: 'attendance',
+                    timestamp: new Date(Date.now() - 18000000).toISOString(),
+                    read: true
+                }
+            ];
+
+            const existing = JSON.parse(localStorage.getItem('notifications_' + currentUser.email) || '[]');
+            const combined = [...samples, ...existing];
+            localStorage.setItem('notifications_' + currentUser.email, JSON.stringify(combined));
+        }
+
+    </script>
+</body>
+</html>

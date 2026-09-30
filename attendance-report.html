@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 25px;
+        }
+
+        .report-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .report-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .attendance-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .attendance-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #23d5ab;
+            color: white;
+        }
+
+        .status-absent {
+            background: #f5576c;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-box i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-box .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .attendance-table {
+                font-size: 0.9rem;
+            }
+            .attendance-table th,
+            .attendance-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-bar" style="color: #667eea;"></i> Monthly Attendance Report</h1>
+            <button class="btn btn-back" onclick="window.location.href='faculty-dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <div class="filter-section">
+            <div class="form-group">
+                <label>Select Class</label>
+                <select id="filterClass">
+                    <option value="all">All Classes</option>
+                    <option value="CSE-A">CSE - Section A</option>
+                    <option value="CSE-B">CSE - Section B</option>
+                    <option value="CSE-C">CSE - Section C</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Select Subject</label>
+                <select id="filterSubject">
+                    <option value="all">All Subjects</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Database Management">Database Management</option>
+                    <option value="Computer Networks">Computer Networks</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Month</label>
+                <input type="month" id="filterMonth" value="2026-09">
+            </div>
+            <button class="btn btn-filter" onclick="generateReport()">
+                <i class="fas fa-filter"></i> Generate Report
+            </button>
+        </div>
+
+        <div class="report-card">
+            <h2><i class="fas fa-clipboard-list" style="color: #667eea;"></i> Attendance Details</h2>
+            
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-box">
+                    <i class="fas fa-users"></i>
+                    <div class="value" id="totalClasses">0</div>
+                    <div class="label">Total Classes</div>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="value" id="avgAttendance">0%</div>
+                    <div class="label">Avg Attendance</div>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-user-check"></i>
+                    <div class="value" id="topAttendee">-</div>
+                    <div class="label">Top Attender</div>
+                </div>
+            </div>
+
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Time</th>
+                        <th>Students Present</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTable">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function generateLocalReport() {
+            const filterClass = document.getElementById('filterClass').value;
+            const filterSubject = document.getElementById('filterSubject').value;
+            const filterMonth = document.getElementById('filterMonth').value;
+
+            // Get all attendance records
+            const attendanceRecords = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('attendance_')) {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    
+                    // Apply filters
+                    if (filterClass !== 'all' && data.class !== filterClass) continue;
+                    if (filterSubject !== 'all' && data.subject !== filterSubject) continue;
+                    if (filterMonth && !data.date.startsWith(filterMonth)) continue;
+                    
+                    attendanceRecords.push(data);
+                }
+            }
+
+            // Sort by date
+            attendanceRecords.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            // Update stats
+            const totalClasses = attendanceRecords.length;
+            let totalAttendance = 0;
+            const studentAttendance = {};
+
+            attendanceRecords.forEach(record => {
+                const present = record.students.length;
+                const totalStudents = 60; // Assume 60 students per class
+                const percent = ((present / totalStudents) * 100).toFixed(1);
+                totalAttendance += parseFloat(percent);
+
+                // Track individual student attendance
+                record.students.forEach(student => {
+                    studentAttendance[student] = (studentAttendance[student] || 0) + 1;
+                });
+            });
+
+            const avgAttendance = totalClasses > 0 ? (totalAttendance / totalClasses).toFixed(1) : 0;
+            
+            // Find top attender
+            let topStudent = '-';
+            let maxClasses = 0;
+            Object.entries(studentAttendance).forEach(([student, count]) => {
+                if (count > maxClasses) {
+                    maxClasses = count;
+                    topStudent = student;
+                }
+            });
+
+            document.getElementById('totalClasses').textContent = totalClasses;
+            document.getElementById('avgAttendance').textContent = avgAttendance + '%';
+            document.getElementById('topAttendee').textContent = topStudent;
+
+            // Update table
+            const tableBody = document.getElementById('reportTable');
+            tableBody.innerHTML = attendanceRecords.map(record => {
+                const present = record.students.length;
+                const totalStudents = 60;
+                const percent = ((present / totalStudents) * 100).toFixed(1);
+                
+                return `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${record.class}</td>
+                        <td>${record.subject}</td>
+                        <td>${record.time}</td>
+                        <td>${present}/${totalStudents}</td>
+                        <td><span class="status-badge status-present">${percent}%</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (attendanceRecords.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999; padding: 30px;">No attendance records found for selected filters.</td></tr>';
+            }
+        }
+
+        async function generateReport() {
+            const filterClass = document.getElementById('filterClass').value;
+            const filterSubject = document.getElementById('filterSubject').value;
+            const filterMonth = document.getElementById('filterMonth').value;
+            try {
+                const [sessionsResult, recordsResult] = await Promise.all([
+                    CampusAPI.request('/api/attendance/sessions'),
+                    CampusAPI.request('/api/attendance')
+                ]);
+                const sessions = sessionsResult.sessions.filter(session => {
+                    return (filterClass === 'all' || session.class === filterClass) &&
+                        (filterSubject === 'all' || session.subject === filterSubject) &&
+                        (!filterMonth || session.date.startsWith(filterMonth));
+                });
+                const matchingSessionIds = new Set(sessions.map(session => session.id));
+                const records = recordsResult.records.filter(record => matchingSessionIds.has(record.sessionId));
+                const counts = {};
+                records.forEach(record => {
+                    if (record.usn) counts[record.usn] = (counts[record.usn] || 0) + 1;
+                });
+                const topAttendee = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                const attendancePercentages = sessions.map(session => session.totalStudents
+                    ? session.present / session.totalStudents * 100 : 0);
+                const average = attendancePercentages.length
+                    ? attendancePercentages.reduce((sum, value) => sum + value, 0) / attendancePercentages.length
+                    : 0;
+                document.getElementById('totalClasses').textContent = sessions.length;
+                document.getElementById('avgAttendance').textContent = average.toFixed(1) + '%';
+                document.getElementById('topAttendee').textContent = topAttendee ? topAttendee[0] : '-';
+                const escape = value => String(value || '').replace(/[&<>'"]/g, character => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[character]));
+                const tableBody = document.getElementById('reportTable');
+                tableBody.innerHTML = sessions.map(session => {
+                    const percent = session.totalStudents
+                        ? (session.present / session.totalStudents * 100).toFixed(1) : '0.0';
+                    return `<tr><td>${escape(session.date)}</td><td>${escape(session.class)}</td>
+                        <td>${escape(session.subject)}</td><td>${escape(session.time)}</td>
+                        <td>${session.present}/${session.totalStudents || 0}</td>
+                        <td><span class="status-badge status-present">${percent}%</span></td></tr>`;
+                }).join('') || '<tr><td colspan="6" style="text-align:center;color:#999;padding:30px">No attendance records found for selected filters.</td></tr>';
+            } catch (error) {
+                CampusAPI.reportError(error);
+            }
+        }
+
+        // Generate report on page load
+        window.onload = function() {
+            generateReport();
+        };
+    </script>
+</body>
+</html>

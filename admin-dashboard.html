@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dashboard-header h1 i {
+            color: #667eea;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stat-card h3 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .admin-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease 0.5s both;
+        }
+
+        .admin-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-card {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: zoomIn 0.5s ease both;
+        }
+
+        .admin-card:nth-child(1) { animation-delay: 0.6s; }
+        .admin-card:nth-child(2) { animation-delay: 0.7s; }
+        .admin-card:nth-child(3) { animation-delay: 0.8s; }
+        .admin-card:nth-child(4) { animation-delay: 0.9s; }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .admin-card i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .admin-card h3 {
+            font-size: 1.1rem;
+        }
+
+        .admin-panel {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .admin-panel.active { display: block; animation: fadeInUp 0.35s ease both; }
+        .panel-header, .panel-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .panel-header { margin-bottom: 20px; }
+        .panel-header h2 { color: #333; }
+        .panel-close, .panel-action { border: 0; border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: 600; }
+        .panel-close { background: #f1f3f9; color: #555; }
+        .panel-action { background: #667eea; color: white; }
+        .admin-table { width: 100%; border-collapse: collapse; color: #444; }
+        .admin-table th, .admin-table td { padding: 12px 10px; border-bottom: 1px solid #eee; text-align: left; }
+        .admin-table th { color: #667eea; font-size: 0.85rem; }
+        .panel-empty { color: #777; padding: 20px 0; }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .report-item { padding: 18px; background: #f5f6ff; border-radius: 12px; }
+        .report-item strong { display: block; color: #667eea; font-size: 1.8rem; }
+        .settings-form { display: grid; gap: 14px; max-width: 500px; }
+        .settings-form label { color: #555; font-weight: 600; }
+        .settings-form input { padding: 11px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .settings-message { color: #218838; min-height: 20px; }
+        .attendance-alert { color: #b42318; font-weight: 700; }
+        .condonation-badge { padding: 5px 9px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+        .condonation-pending { background: #fff3cd; color: #856404; }
+        .condonation-approved { background: #d1e7dd; color: #0f5132; }
+        .condonation-rejected { background: #f8d7da; color: #842029; }
+        .detained-badge { padding: 5px 9px; border-radius: 12px; background: #f8d7da; color: #842029; font-size: 0.8rem; font-weight: 700; }
+        .condonation-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .condonation-actions button { border: 0; border-radius: 6px; padding: 6px 9px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+        .approve-btn { background: #d1e7dd; color: #0f5132; }
+        .reject-btn { background: #f8d7da; color: #842029; }
+        .notice-form { display: grid; gap: 12px; margin-bottom: 22px; }
+        .notice-form input, .notice-form textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; }
+        .notice-form textarea { min-height: 85px; resize: vertical; }
+        .notice-form button { width: fit-content; }
+        .notice-item { padding: 14px 0; border-bottom: 1px solid #eee; }
+        .notice-item:last-child { border-bottom: 0; }
+        .notice-item h3 { color: #333; margin-bottom: 5px; }
+        .notice-item p { color: #666; margin-bottom: 7px; }
+        .notice-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: #888; font-size: 0.85rem; }
+        .notice-delete { border: 0; background: #f8d7da; color: #842029; border-radius: 6px; padding: 6px 9px; cursor: pointer; font-weight: 600; }
+        .account-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .account-form .full-width { grid-column: 1 / -1; }
+        .account-form label { display: block; color: #555; font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
+        .account-form input, .account-form select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font: inherit; }
+        .account-form button { width: fit-content; }
+        .account-fields { display: contents; }
+        .account-message { min-height: 20px; color: #218838; }
+        .account-delete { border: 0; background: #f8d7da; color: #842029; border-radius: 6px; padding: 6px 9px; cursor: pointer; font-weight: 600; }
+        @media (max-width: 700px) { .account-form { grid-template-columns: 1fr; } .account-form .full-width { grid-column: auto; } }
+
+        @media (max-width: 768px) {
+            .stats-grid, .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body><a href="smart-campus.html" style="position:fixed;right:18px;bottom:18px;z-index:9999;background:#2563eb;color:white;padding:11px 15px;border-radius:999px;text-decoration:none;font-weight:700;box-shadow:0 8px 25px rgba(37,99,235,.3)">🚀 Smart Modules</a>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-user-shield"></i> Admin Dashboard</h1>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3>1,250</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-graduate"></i>
+                <h3>1,100</h3>
+                <p>Students</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>85</h3>
+                <p>Faculty</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>23</h3>
+                <p>Pending Complaints</p>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2><i class="fas fa-cogs"></i> Admin Controls</h2>
+            <div class="admin-grid">
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('users')" onkeydown="handleCardKey(event, 'users')">
+                    <i class="fas fa-user-cog"></i>
+                    <h3>Manage Users</h3>
+                </div>
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('complaints')" onkeydown="handleCardKey(event, 'complaints')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>View Complaints</h3>
+                </div>
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('reports')" onkeydown="handleCardKey(event, 'reports')">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Generate Reports</h3>
+                </div>
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('settings')" onkeydown="handleCardKey(event, 'settings')">
+                    <i class="fas fa-sliders-h"></i>
+                    <h3>Settings</h3>
+                </div>
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('attendance')" onkeydown="handleCardKey(event, 'attendance')">
+                    <i class="fas fa-user-clock"></i>
+                    <h3>Attendance &amp; Condonation</h3>
+                </div>
+                <div class="admin-card" role="button" tabindex="0" onclick="showAdminPanel('notices')" onkeydown="handleCardKey(event, 'notices')">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3>Announcements &amp; Notice Board</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-panel" id="adminPanel" aria-live="polite"></div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        function getComplaints() {
+            return JSON.parse(localStorage.getItem('allComplaints') || '[]');
+        }
+
+        function getRegisteredAccounts() {
+            return JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
+        }
+
+        function toggleManagementFeeFields(admissionType) {
+            const feeSection = document.getElementById('managementFeeFields');
+            if (!feeSection) return;
+            const isManagement = admissionType === 'Management';
+            feeSection.style.display = isManagement ? 'grid' : 'none';
+            feeSection.style.gridTemplateColumns = 'repeat(2, minmax(180px, 1fr))';
+            feeSection.style.gap = '12px';
+            feeSection.style.gridColumn = '1 / -1';
+            ['accountTuitionFee', 'accountDevelopmentFee', 'accountHostelFee', 'accountTransportFee', 'accountMiscFee'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.required = isManagement;
+            });
+        }
+
+        function toggleAccountFields() {
+            const role = document.getElementById('accountRole').value;
+            const isStudent = role === 'Student';
+            document.getElementById('studentAccountFields').style.display = isStudent ? 'contents' : 'none';
+            document.getElementById('facultyAccountFields').style.display = isStudent ? 'none' : 'contents';
+            ['accountUsn', 'accountSection', 'accountBranch'].forEach(id => document.getElementById(id).required = isStudent);
+            ['accountEmployeeId', 'accountPosition', 'accountSubject', 'accountClass', 'accountDepartment'].forEach(id => document.getElementById(id).required = role === 'Faculty');
+            if (isStudent) {
+                const feeType = document.getElementById('accountAdmissionType')?.value || 'EMCET';
+                toggleManagementFeeFields(feeType);
+            } else {
+                const feeSection = document.getElementById('managementFeeFields');
+                if (feeSection) feeSection.style.display = 'none';
+            }
+        }
+
+        function getAccountId() {
+            const role = document.getElementById('accountRole').value;
+            return document.getElementById(role === 'Student' ? 'accountUsn' : 'accountEmployeeId').value.trim();
+        }
+
+        async function registerAccount(event) {
+            event.preventDefault();
+            const role = document.getElementById('accountRole').value;
+            const message = document.getElementById('accountMessage');
+            const account = {
+                name: document.getElementById('accountName').value.trim(),
+                email: document.getElementById('accountEmail').value.trim(),
+                password: document.getElementById('accountPassword').value,
+                role
+            };
+            if (role === 'Student') {
+                const admissionType = document.getElementById('accountAdmissionType').value;
+                const feeStructure = {
+                    tuitionFee: Number(document.getElementById('accountTuitionFee').value || 0),
+                    developmentFee: Number(document.getElementById('accountDevelopmentFee').value || 0),
+                    hostelFee: Number(document.getElementById('accountHostelFee').value || 0),
+                    transportFee: Number(document.getElementById('accountTransportFee').value || 0),
+                    miscFee: Number(document.getElementById('accountMiscFee').value || 0)
+                };
+                account.usn = document.getElementById('accountUsn').value.trim();
+                account.year = document.getElementById('accountYear').value;
+                account.section = document.getElementById('accountSection').value;
+                account.department = document.getElementById('accountBranch').value;
+                account.profile = { admissionType: admissionType };
+                if (admissionType === 'Management') {
+                    feeStructure.totalFee = Object.values(feeStructure).reduce((sum, value) => sum + value, 0);
+                    account.profile.feeStructure = feeStructure;
+                }
+            } else {
+                account.employeeId = role === 'Faculty' ? document.getElementById('accountEmployeeId').value.trim() : '';
+                account.department = document.getElementById('accountDepartment').value;
+                account.subject = document.getElementById('accountSubject').value.trim();
+                account.assignedClass = document.getElementById('accountClass').value.trim();
+                account.profile = {
+                    position: document.getElementById('accountPosition').value
+                };
+            }
+            try {
+                await CampusAPI.request('/api/users', { method: 'POST', body: account });
+                const result = await CampusAPI.request('/api/users');
+                localStorage.setItem('registeredAccounts', JSON.stringify(result.users));
+                showAdminPanel('users');
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        }
+
+        async function deleteAccount(userId) {
+            if (!confirm('Deactivate this account?')) return;
+            try {
+                await CampusAPI.request('/api/users/' + encodeURIComponent(userId), { method: 'DELETE' });
+                const result = await CampusAPI.request('/api/users');
+                localStorage.setItem('registeredAccounts', JSON.stringify(result.users));
+                showAdminPanel('users');
+            } catch (error) {
+                CampusAPI.reportError(error);
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[character]));
+        }
+
+        function handleCardKey(event, panel) {
+            if (event.key === 'Enter' || event.key === ' ') showAdminPanel(panel);
+        }
+
+        function showAdminPanel(panel) {
+            const container = document.getElementById('adminPanel');
+            const complaints = getComplaints();
+            const panelTitles = { users: 'Manage Users', complaints: 'View Complaints', reports: 'Generate Reports', settings: 'System Settings', attendance: 'Attendance & Condonation', notices: 'Announcements & Notice Board' };
+            let content = `<div class="panel-header"><h2>${panelTitles[panel]}</h2><button class="panel-close" onclick="closeAdminPanel()">Close</button></div>`;
+
+            if (panel === 'users') {
+                const accounts = getRegisteredAccounts();
+                content += `<form class="account-form" onsubmit="registerAccount(event)"><div class="full-width"><label for="accountRole">Account type</label><select id="accountRole" onchange="toggleAccountFields()"><option value="Student">Student</option><option value="Faculty">Faculty / Staff</option></select></div><div><label for="accountName">Full name</label><input id="accountName" required></div><div><label for="accountEmail">Email</label><input id="accountEmail" type="email" required></div><div><label for="accountPassword">Password</label><input id="accountPassword" type="password" required></div><div id="studentAccountFields" class="account-fields"><div><label for="accountUsn">Student ID / USN</label><input id="accountUsn" required></div><div><label for="accountYear">Year</label><select id="accountYear"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div><div><label for="accountSection">Section</label><select id="accountSection" required><option value="A">A-Section</option><option value="B">B-Section</option><option value="C">C-Section</option></select></div><div><label for="accountBranch">Department</label><select id="accountBranch" required><option value="CSE">CSE</option><option value="CSE (AI & ML)">CSE (AI & ML)</option><option value="CSE (DS)">CSE (DS)</option><option value="ECE">ECE</option><option value="EEE">EEE</option><option value="MECH">MECH</option><option value="CIVIL">CIVIL</option><option value="MBA">MBA</option></select></div><div><label for="accountAdmissionType">Admission type</label><select id="accountAdmissionType" onchange="toggleManagementFeeFields(this.value)"><option value="EMCET">EMCET</option><option value="Management">Management</option></select></div><div id="managementFeeFields" style="display:none; grid-column:1 / -1; grid-template-columns:repeat(2, minmax(180px, 1fr)); gap:12px;"><div><label for="accountTuitionFee">Tuition Fee</label><input id="accountTuitionFee" type="number" min="0" placeholder="Optional"></div><div><label for="accountDevelopmentFee">Development Fee</label><input id="accountDevelopmentFee" type="number" min="0" placeholder="Optional"></div><div><label for="accountHostelFee">Hostel Fee</label><input id="accountHostelFee" type="number" min="0" placeholder="Optional"></div><div><label for="accountTransportFee">Travel / Transport Fee</label><input id="accountTransportFee" type="number" min="0" placeholder="Optional"></div><div><label for="accountMiscFee">Miscellaneous Fee</label><input id="accountMiscFee" type="number" min="0" placeholder="Optional"></div></div></div><div id="facultyAccountFields" class="account-fields" style="display:none"><div><label for="accountEmployeeId">Employee / Staff ID</label><input id="accountEmployeeId"></div><div><label for="accountDepartment">Department / Office</label><select id="accountDepartment"><option value="Administration">Administration</option><option value="Academic">Academic</option><option value="CSE">CSE</option><option value="ECE">ECE</option><option value="EEE">EEE</option><option value="MECH">MECH</option><option value="CIVIL">CIVIL</option><option value="MBA">MBA</option></select></div><div><label for="accountPosition">Position / Designation</label><select id="accountPosition"><optgroup label="Top Management"><option value="Principal / Director">Principal / Director</option><option value="Vice-Principal / Dean Academics">Vice-Principal / Dean Academics</option><option value="Administrative Officer (AO)">Administrative Officer (AO)</option></optgroup><optgroup label="Academic Heads"><option value="Head of Department (HOD)">Head of Department (HOD)</option><option value="Program Coordinator">Program Coordinator</option></optgroup><optgroup label="Teaching Staff"><option value="Professor">Professor</option><option value="Associate Professor">Associate Professor</option><option value="Assistant Professor">Assistant Professor</option><option value="Lab Assistant / Lab In-charge">Lab Assistant / Lab In-charge</option></optgroup></select></div><div><label for="accountSubject">Subject / Responsibility</label><input id="accountSubject" placeholder="Data Structures / Academic Coordination"></div><div><label for="accountClass">Assigned class / section</label><input id="accountClass" placeholder="CSE-A / Department Office"></div></div><div class="full-width"><button class="panel-action" type="submit"><i class="fas fa-user-plus"></i> Register account</button><p class="account-message" id="accountMessage"></p></div></form>`;
+                content += accounts.length ? `<table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>ID</th><th>Dept / Role</th><th></th></tr></thead><tbody>${accounts.map((account, index) => `<tr><td>${escapeHtml(account.name)}</td><td>${escapeHtml(account.email)}</td><td>${escapeHtml(account.role)}</td><td>${escapeHtml(account.usn || account.employeeId || '-')}</td><td>${escapeHtml(account.role === 'Faculty' ? `${account.department || '-'} / ${account.position || account.complaintTeam || '-'}` : `${account.branch || '-'} / ${account.year || '-'}`)}</td><td><button class="account-delete" onclick="deleteAccount(${index})">Delete</button></td></tr>`).join('')}</tbody></table>` : '<p class="panel-empty">No student or faculty accounts have been registered yet.</p>';
+            } else if (panel === 'complaints') {
+                content += complaints.length ? `<table class="admin-table"><thead><tr><th>ID</th><th>Complaint</th><th>Student</th><th>Status</th><th>Date</th></tr></thead><tbody>${complaints.map(complaint => `<tr><td>${escapeHtml(complaint.id)}</td><td>${escapeHtml(complaint.title)}</td><td>${escapeHtml(complaint.studentName || complaint.studentEmail)}</td><td>${escapeHtml(complaint.status)}</td><td>${escapeHtml(new Date(complaint.date).toLocaleDateString())}</td></tr>`).join('')}</tbody></table>` : '<p class="panel-empty">No complaints have been submitted yet.</p>';
+            } else if (panel === 'reports') {
+                const resolved = complaints.filter(complaint => complaint.status === 'Resolved').length;
+                const pending = complaints.filter(complaint => complaint.status !== 'Resolved').length;
+                content += `<div class="report-grid"><div class="report-item"><strong>${complaints.length}</strong>Total complaints</div><div class="report-item"><strong>${pending}</strong>Pending complaints</div><div class="report-item"><strong>${resolved}</strong>Resolved complaints</div></div><div class="panel-row" style="margin-top:20px;"><span>Export the current complaint register for analysis.</span><button class="panel-action" onclick="exportComplaints()"><i class="fas fa-download"></i> Export CSV</button></div>`;
+            } else if (panel === 'attendance') {
+                const attendance = getAttendanceSummary();
+                const belowLimit = attendance.filter(student => student.percentage < 50);
+                content += `<p class="panel-empty">Attendance below <strong>50%</strong> is detained. ${belowLimit.length} student(s) currently require admin review.</p>`;
+                content += belowLimit.length ? `<table class="admin-table"><thead><tr><th>Student USN</th><th>Present</th><th>Total classes</th><th>Attendance</th><th>Status</th><th>Action</th></tr></thead><tbody>${belowLimit.map(student => `<tr><td>${escapeHtml(student.usn)}</td><td>${student.present}</td><td>${student.totalSessions}</td><td class="attendance-alert">${student.percentage}%</td><td><span class="detained-badge">Detained</span></td><td><div class="condonation-actions"><button class="approve-btn" onclick="updateCondonation('${escapeHtml(student.usn)}', 'Approved')">Approve</button><button class="reject-btn" onclick="updateCondonation('${escapeHtml(student.usn)}', 'Rejected')">Reject</button></div></td></tr>`).join('')}</tbody></table>` : '<p class="panel-empty">No students are currently below the 50% attendance threshold.</p>';
+            } else if (panel === 'notices') {
+                const notices = getCampusAnnouncements();
+                content += `<form class="notice-form" onsubmit="publishAnnouncement(event)"><input id="noticeTitle" required maxlength="100" placeholder="Announcement title"><textarea id="noticeMessage" required maxlength="500" placeholder="Write the notice or announcement..."></textarea><button class="panel-action" type="submit"><i class="fas fa-paper-plane"></i> Publish notice</button><p class="settings-message" id="noticeMessageStatus"></p></form>`;
+                content += notices.length ? notices.map((notice, index) => `<div class="notice-item"><h3>${escapeHtml(notice.title)}</h3><p>${escapeHtml(notice.message)}</p><div class="notice-meta"><span>${escapeHtml(notice.date || new Date(notice.timestamp).toLocaleDateString())}</span><button class="notice-delete" onclick="deleteAnnouncement(${index})">Delete</button></div></div>`).join('') : '<p class="panel-empty">No notices have been published yet.</p>';
+            } else {
+                const portalName = localStorage.getItem('portalName') || 'Smart Campus Portal';
+                content += `<form class="settings-form" onsubmit="saveSettings(event)"><label for="portalName">Portal name</label><input id="portalName" value="${escapeHtml(portalName)}" maxlength="80"><p class="settings-message" id="settingsMessage"></p><button class="panel-action" type="submit">Save settings</button></form>`;
+            }
+            container.innerHTML = content;
+            if (panel === 'users') {
+                const roleSelect = document.getElementById('accountRole');
+                roleSelect.add(new Option('Placement Officer', 'Placement Officer'));
+                document.getElementById('accountPassword').readOnly = false;
+                document.getElementById('accountPassword').minLength = 10;
+                document.getElementById('accountPassword').value = '';
+                const admissionType = document.getElementById('accountAdmissionType');
+                if (admissionType) {
+                    admissionType.addEventListener('change', (event) => toggleManagementFeeFields(event.target.value));
+                }
+                toggleManagementFeeFields(document.getElementById('accountAdmissionType')?.value || 'EMCET');
+            }
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function getCampusAnnouncements() {
+            return JSON.parse(localStorage.getItem('campusAnnouncements') || '[]').sort((first, second) => new Date(second.timestamp) - new Date(first.timestamp));
+        }
+
+        async function publishAnnouncement(event) {
+            event.preventDefault();
+            try {
+                await CampusAPI.request('/api/announcements', {
+                    method: 'POST',
+                    body: {
+                        title: document.getElementById('noticeTitle').value.trim(),
+                        message: document.getElementById('noticeMessage').value.trim(),
+                        audience: 'All'
+                    }
+                });
+                const result = await CampusAPI.request('/api/announcements');
+                localStorage.setItem('campusAnnouncements', JSON.stringify(result.announcements));
+                showAdminPanel('notices');
+            } catch (error) {
+                document.getElementById('noticeMessageStatus').textContent = error.message;
+            }
+        }
+
+        async function deleteAnnouncement(index) {
+            const notices = getCampusAnnouncements();
+            if (!notices[index]) return;
+            try {
+                await CampusAPI.request('/api/announcements/' + notices[index].id, { method: 'DELETE' });
+                const result = await CampusAPI.request('/api/announcements');
+                localStorage.setItem('campusAnnouncements', JSON.stringify(result.announcements));
+                showAdminPanel('notices');
+            } catch (error) {
+                CampusAPI.reportError(error);
+            }
+        }
+
+        function getAttendanceSummary() {
+            return JSON.parse(localStorage.getItem('adminAttendanceSummary') || '[]');
+        }
+
+        async function updateCondonation(usn, status) {
+            try {
+                await CampusAPI.request('/api/attendance/condonation/' + encodeURIComponent(usn), {
+                    method: 'PATCH',
+                    body: { status }
+                });
+                const result = await CampusAPI.request('/api/attendance/summary');
+                localStorage.setItem('adminAttendanceSummary', JSON.stringify(result.students));
+                showAdminPanel('attendance');
+            } catch (error) {
+                CampusAPI.reportError(error);
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        async function saveSettings(event) {
+            event.preventDefault();
+            try {
+                const result = await CampusAPI.request('/api/settings', {
+                    method: 'PUT',
+                    body: { portalName: document.getElementById('portalName').value.trim() }
+                });
+                localStorage.setItem('portalName', result.portalName);
+                document.getElementById('settingsMessage').textContent = 'Settings saved successfully.';
+            } catch (error) {
+                document.getElementById('settingsMessage').textContent = error.message;
+            }
+        }
+
+        function exportComplaints() {
+            const complaints = getComplaints();
+            const headers = ['ID', 'Title', 'Student', 'Category', 'Status', 'Date'];
+            const rows = complaints.map(complaint => [complaint.id, complaint.title, complaint.studentName || complaint.studentEmail, complaint.category, complaint.status, complaint.date]);
+            const csv = [headers, ...rows].map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            link.download = 'complaints-report.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                try {
+                    await CampusAPI.request('/api/auth/logout', { method: 'POST' });
+                } finally {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // Check if user is logged in as Admin
+        window.onload = async function() {
+            try {
+                const result = await CampusAPI.request('/api/auth/me');
+                if (!result.user || result.user.role !== 'Admin') throw new Error('Admin access required.');
+                currentUser = result.user;
+            } catch (error) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'admin-login.html';
+            }
+        };
+    </script>
+</body>
+</html>

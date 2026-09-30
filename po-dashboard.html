@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Officer Dashboard - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dashboard-header h1 i {
+            color: #667eea;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stat-card h3 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .recent-activity {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease 0.5s both;
+        }
+
+        .recent-activity h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            margin-bottom: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.5s ease both;
+        }
+
+        .activity-item:nth-child(2) { animation-delay: 0.6s; }
+        .activity-item:nth-child(3) { animation-delay: 0.7s; }
+        .activity-item:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .activity-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(10px);
+        }
+
+        .activity-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .activity-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body><a href="smart-campus.html" style="position:fixed;right:18px;bottom:18px;z-index:9999;background:#2563eb;color:white;padding:11px 15px;border-radius:999px;text-decoration:none;font-weight:700;box-shadow:0 8px 25px rgba(37,99,235,.3)">🚀 Smart Modules</a>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-briefcase"></i> Placement Officer Dashboard</h1>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-building"></i>
+                <h3>45</h3>
+                <p>Companies Visited</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-tie"></i>
+                <h3>320</h3>
+                <p>Students Placed</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-money-bill-wave"></i>
+                <h3>12 LPA</h3>
+                <p>Average Package</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-percent"></i>
+                <h3>78%</h3>
+                <p>Placement Rate</p>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+            <div class="activity-item">
+                <h4>Google Recruitment Drive</h4>
+                <p>Scheduled for September 25, 2026 - 150 students registered</p>
+            </div>
+            <div class="activity-item">
+                <h4>Microsoft Interview Results</h4>
+                <p>25 students selected with average package of 18 LPA</p>
+            </div>
+            <div class="activity-item">
+                <h4>TCS Campus Drive</h4>
+                <p>Completed - 80 students placed</p>
+            </div>
+            <div class="activity-item">
+                <h4>Amazon Off-Campus Drive</h4>
+                <p>Registration open until September 30, 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                try {
+                    await CampusAPI.request('/api/auth/logout', { method: 'POST' });
+                } finally {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // Verify the real Flask session as Placement Officer.
+        window.onload = async function() {
+            try {
+                const result = await CampusAPI.request('/api/auth/me');
+                if (!result.user || result.user.role !== 'Placement Officer') {
+                    throw new Error('Access denied');
+                }
+                localStorage.setItem('currentUser', JSON.stringify(result.user));
+            } catch (error) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'po-login.html';
+            }
+        };
+    </script>
+</body>
+</html>

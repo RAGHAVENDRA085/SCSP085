@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Test - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .test-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .test-info h1 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .test-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .timer-box .time {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .timer-box .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .question-marks {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .coding-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .coding-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .vowel-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .vowel-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled), .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .question-palette {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .palette-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .palette-item:hover {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .palette-item.answered {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .palette-item.current {
+            border-color: #f093fb;
+            border-width: 3px;
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% { border-color: #f093fb; }
+            50% { border-color: #f5576c; }
+        }
+
+        .submit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submit-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content i {
+            font-size: 4rem;
+            color: #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .test-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .question-card {
+                padding: 25px;
+            }
+            .navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <div class="test-info">
+                <h1><i class="fas fa-clipboard-list" style="color: #667eea;"></i> Online Examination</h1>
+                <p>Answer all questions carefully. Auto-submit when time expires.</p>
+            </div>
+            <div class="timer-box" id="timerBox">
+                <span class="time" id="timer">30:00</span>
+                <span class="label">Time Remaining</span>
+            </div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-header">
+                <span class="question-number" id="questionNumber">Question 1</span>
+                <span class="question-marks" id="questionMarks">1 Mark</span>
+            </div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            <div id="answerContainer"></div>
+
+            <div class="navigation">
+                <button class="nav-btn btn-prev" id="prevBtn" onclick="previousQuestion()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn btn-next" id="nextBtn" onclick="nextQuestion()">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="nav-btn btn-submit hidden" id="submitBtn" onclick="showSubmitModal()">
+                    <i class="fas fa-check-circle"></i> Submit Test
+                </button>
+            </div>
+        </div>
+
+        <div class="question-palette">
+            <h3 style="color: #333; margin-bottom: 10px;">
+                <i class="fas fa-th" style="color: #667eea;"></i> Question Palette
+            </h3>
+            <div class="palette-grid" id="paletteGrid"></div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="submit-modal" id="submitModal">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Submit Test?</h2>
+            <p>Are you sure you want to submit? You cannot change answers after submission.</p>
+            <div class="modal-buttons">
+                <button class="nav-btn btn-prev" onclick="hideSubmitModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="nav-btn btn-submit" onclick="submitTest()">
+                    <i class="fas fa-check"></i> Yes, Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestion = 0;
+        let answers = {};
+        let timeLeft = 1800; // 30 minutes in seconds
+        let timerInterval;
+
+        // Load questions from localStorage
+        async function loadQuestions() {
+            const result = await CampusAPI.request('/api/questions');
+            questions = result.questions;
+            if (!questions.length) {
+                document.getElementById('questionText').textContent = 'No test questions are available yet. Please check back later.';
+                document.getElementById('answerContainer').innerHTML = '';
+                document.getElementById('paletteGrid').innerHTML = '';
+                document.getElementById('nextBtn').disabled = true;
+                document.getElementById('submitBtn').disabled = true;
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Warning when less than 5 minutes
+                if (timeLeft < 300) {
+                    document.getElementById('timerBox').classList.add('warning');
+                }
+
+                // Auto-submit when time expires
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('questionMarks').textContent = `${q.marks} Mark${q.marks > 1 ? 's' : ''}`;
+            document.getElementById('questionText').textContent = q.text;
+
+            const container = document.getElementById('answerContainer');
+            container.innerHTML = '';
+
+            if (q.type === 'MCQ') {
+                const options = ['A', 'B', 'C', 'D'];
+                container.innerHTML = `
+                    <div class="options-container">
+                        ${options.map(opt => `
+                            <div class="option ${answers[q.id] === opt ? 'selected' : ''}" 
+                                 onclick="selectOption('${opt}')" data-option="${opt}">
+                                <span class="option-label">${opt}</span>
+                                <span>${q.options[opt]}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (q.type === 'CODING') {
+                container.innerHTML = `
+                    <textarea class="coding-input" 
+                              placeholder="Write your code here..."
+                              onchange="saveCodeAnswer(this.value)">${answers[q.id] || ''}</textarea>
+                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> Expected: ${q.expectedOutput}
+                    </p>
+                `;
+            } else if (q.type === 'VOWEL') {
+                container.innerHTML = `
+                    <div style="text-align: center;">
+                        <p style="margin-bottom: 15px; color: #666;">
+                            Character: <strong style="font-size: 2rem; color: #667eea;">${q.inputChar}</strong>
+                        </p>
+                        <select class="vowel-input" onchange="saveVowelAnswer(this.value)">
+                            <option value="">Select Answer</option>
+                            <option value="Vowel" ${answers[q.id] === 'Vowel' ? 'selected' : ''}>Vowel</option>
+                            <option value="Consonant" ${answers[q.id] === 'Consonant' ? 'selected' : ''}>Consonant</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+            }
+
+            renderPalette();
+        }
+
+        function selectOption(option) {
+            answers[questions[currentQuestion].id] = option;
+            renderQuestion();
+        }
+
+        function saveCodeAnswer(code) {
+            answers[questions[currentQuestion].id] = code;
+        }
+
+        function saveVowelAnswer(answer) {
+            answers[questions[currentQuestion].id] = answer;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = questions.map((q, index) => `
+                <div class="palette-item ${answers[q.id] ? 'answered' : ''} ${index === currentQuestion ? 'current' : ''}" 
+                     onclick="goToQuestion(${index})">
+                    ${index + 1}
+                </div>
+            `).join('');
+        }
+
+        function goToQuestion(index) {
+            currentQuestion = index;
+            renderQuestion();
+        }
+
+        function showSubmitModal() {
+            document.getElementById('submitModal').classList.add('show');
+        }
+
+        function hideSubmitModal() {
+            document.getElementById('submitModal').classList.remove('show');
+        }
+
+        async function submitTest() {
+            clearInterval(timerInterval);
+            try {
+                const result = await CampusAPI.request('/api/tests/submit', {
+                    method: 'POST',
+                    body: { answers: answers }
+                });
+                localStorage.setItem('currentResult', JSON.stringify(result));
+                window.location.href = 'test-result.html';
+            } catch (error) {
+                CampusAPI.reportError(error);
+            }
+        }
+
+        // Initialize
+        window.onload = async function() {
+            try {
+                await loadQuestions();
+            } catch (error) {
+                CampusAPI.reportError(error);
+                return;
+            }
+            if (!questions.length) return;
+            startTimer();
+            renderQuestion();
+        };
+
+        // Prevent accidental page close
+        window.onbeforeunload = function() {
+            return "Are you sure you want to leave? Your test will be auto-submitted.";
+        };
+    </script>
+</body>
+</html>

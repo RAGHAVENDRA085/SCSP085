@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-input input[type="text"] {
+            flex: 1;
+        }
+
+        .option-label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .type-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .type-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .type-btn i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .questions-list {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .questions-list h2 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-item {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            animation: slideInLeft 0.5s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .question-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .question-type-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script src="static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-database"></i> Question Bank Management</h1>
+            <button class="btn btn-back" onclick="window.location.href='faculty-dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <!-- Add Question Form -->
+        <div class="form-card">
+            <h2 style="margin-bottom: 20px; color: #333;">
+                <i class="fas fa-plus-circle" style="color: #667eea;"></i> Add New Question
+            </h2>
+
+            <div class="question-type-selector">
+                <div class="type-btn active" onclick="selectQuestionType('MCQ')">
+                    <i class="fas fa-list-ul"></i>
+                    <span>Multiple Choice (MCQ)</span>
+                </div>
+                <div class="type-btn" onclick="selectQuestionType('CODING')">
+                    <i class="fas fa-code"></i>
+                    <span>Coding Question</span>
+                </div>
+                <div class="type-btn" onclick="selectQuestionType('VOWEL')">
+                    <i class="fas fa-font"></i>
+                    <span>Vowel/Consonant</span>
+                </div>
+            </div>
+
+            <form id="questionForm" onsubmit="saveQuestion(event)">
+                <div class="form-group">
+                    <label>Question Text</label>
+                    <textarea id="questionText" placeholder="Enter your question here..." required></textarea>
+                </div>
+
+                <!-- MCQ Options -->
+                <div id="mcqOptions" class="options-container">
+                    <div class="option-input">
+                        <span class="option-label">A</span>
+                        <input type="text" placeholder="Option A" class="option-a" required>
+                    </div>
+                    <div class="option-input">
+                        <span class="option-label">B</span>
+                        <input type="text" placeholder="Option B" class="option-b" required>
+                    </div>
+                    <div class="option-input">
+                        <span class="option-label">C</span>
+                        <input type="text" placeholder="Option C" class="option-c" required>
+                    </div>
+                    <div class="option-input">
+                        <span class="option-label">D</span>
+                        <input type="text" placeholder="Option D" class="option-d" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Correct Answer</label>
+                        <select id="correctAnswer" required>
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Coding Question Input -->
+                <div id="codingInput" class="hidden">
+                    <div class="form-group">
+                        <label>Expected Output/Test Case</label>
+                        <textarea id="expectedOutput" placeholder="Enter expected output or test case..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Difficulty Level</label>
+                        <select id="difficulty" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Vowel/Consonant Input -->
+                <div id="vowelInput" class="hidden">
+                    <div class="form-group">
+                        <label>Input Character</label>
+                        <input type="text" id="inputChar" maxlength="1" placeholder="Enter a single character" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Answer</label>
+                        <select id="vowelAnswer" required>
+                            <option value="Vowel">Vowel</option>
+                            <option value="Consonant">Consonant</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Marks</label>
+                    <input type="number" id="marks" min="1" max="10" value="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Save Question
+                </button>
+            </form>
+        </div>
+
+        <!-- Questions List -->
+        <div class="questions-list">
+            <h2><i class="fas fa-list" style="color: #667eea;"></i> All Questions</h2>
+            <div id="questionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentType = 'MCQ';
+        let questions = JSON.parse(localStorage.getItem('examQuestions')) || [];
+
+        function selectQuestionType(type) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.type-btn').classList.add('active');
+
+            // Show/hide relevant sections
+            document.getElementById('mcqOptions').classList.toggle('hidden', type !== 'MCQ');
+            document.getElementById('codingInput').classList.toggle('hidden', type !== 'CODING');
+            document.getElementById('vowelInput').classList.toggle('hidden', type !== 'VOWEL');
+        }
+
+        async function saveQuestion(e) {
+            e.preventDefault();
+
+            const question = {
+                id: Date.now(),
+                type: currentType,
+                text: document.getElementById('questionText').value,
+                marks: parseInt(document.getElementById('marks').value),
+                timestamp: new Date().toISOString()
+            };
+
+            if (currentType === 'MCQ') {
+                question.options = {
+                    A: document.querySelector('.option-a').value,
+                    B: document.querySelector('.option-b').value,
+                    C: document.querySelector('.option-c').value,
+                    D: document.querySelector('.option-d').value
+                };
+                question.correctAnswer = document.getElementById('correctAnswer').value;
+            } else if (currentType === 'CODING') {
+                question.expectedOutput = document.getElementById('expectedOutput').value;
+                question.difficulty = document.getElementById('difficulty').value;
+            } else if (currentType === 'VOWEL') {
+                question.inputChar = document.getElementById('inputChar').value;
+                question.expectedAnswer = document.getElementById('vowelAnswer').value;
+            }
+
+            try {
+                await CampusAPI.request('/api/questions', {
+                    method: 'POST',
+                    body: question
+                });
+                const result = await CampusAPI.request('/api/questions');
+                questions = result.questions;
+                localStorage.setItem('examQuestions', JSON.stringify(questions));
+            } catch (error) {
+                CampusAPI.reportError(error);
+                return;
+            }
+
+            // Reset form
+            document.getElementById('questionForm').reset();
+            selectQuestionType('MCQ');
+            renderQuestions();
+
+            // Show success animation
+            alert('Question added successfully!');
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            if (questions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No questions added yet.</p>';
+                return;
+            }
+
+            container.innerHTML = questions.map((q, index) => `
+                <div class="question-item">
+                    <div class="question-info">
+                        <h4>Q${index + 1}: ${q.text.substring(0, 80)}${q.text.length > 80 ? '...' : ''}</h4>
+                        <p>
+                            <span style="background: #667eea; color: white; padding: 3px 10px; border-radius: 5px; font-size: 0.8rem;">
+                                ${q.type}
+                            </span>
+                            <span style="margin-left: 10px; color: #666;">
+                                <i class="fas fa-star" style="color: #ffc107;"></i> ${q.marks} marks
+                            </span>
+                        </p>
+                    </div>
+                    <div class="question-actions">
+                        <button class="btn-small btn-edit" onclick="deleteQuestion(${q.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteQuestion(id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                try {
+                    await CampusAPI.request('/api/questions/' + encodeURIComponent(id), { method: 'DELETE' });
+                    const result = await CampusAPI.request('/api/questions');
+                    questions = result.questions;
+                    localStorage.setItem('examQuestions', JSON.stringify(questions));
+                    renderQuestions();
+                } catch (error) {
+                    CampusAPI.reportError(error);
+                }
+            }
+        }
+
+        // Load questions on page load
+        window.onload = function() {
+            renderQuestions();
+        };
+    </script>
+</body>
+</html>

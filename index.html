@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus Portal - Welcome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .particle {
+            position: absolute; width: 4px; height: 4px;
+            background: rgba(255, 255, 255, 0.5); border-radius: 50%;
+            animation: particleFloat 20s infinite;
+        }
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(100vh); opacity: 0; }
+            10%, 90% { opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+        .blob {
+            position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6;
+            animation: morph 20s infinite ease-in-out; z-index: 0;
+        }
+        .blob-1 { width: 400px; height: 400px; background: rgba(102, 126, 234, 0.6); top: -100px; left: -100px; }
+        .blob-2 { width: 300px; height: 300px; background: rgba(231, 60, 126, 0.6); bottom: -50px; right: -50px; animation-delay: -5s; }
+        .blob-3 { width: 350px; height: 350px; background: rgba(35, 213, 171, 0.6); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -10s; }
+        @keyframes morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+        .container {
+            position: relative; z-index: 10; max-width: 1100px; width: 100%;
+            animation: cardEntry 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes cardEntry {
+            0% { opacity: 0; transform: translateY(100px) scale(0.8); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            border-radius: 30px; padding: 50px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .logo-icon {
+            font-size: 5rem;
+            background: linear-gradient(135deg, #fff, #f093fb);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: logoPulse 3s ease-in-out infinite;
+            display: inline-block; margin-bottom: 15px;
+        }
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .title h1 { font-size: 2.5rem; color: white; margin-bottom: 10px; }
+        .title p { color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 40px; }
+        .role-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 20px; max-width: 800px; margin: 0 auto;
+        }
+        .role-card {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 20px;
+            padding: 30px 20px; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-decoration: none; color: white;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .role-card:nth-child(1) { animation-delay: 0.2s; }
+        .role-card:nth-child(2) { animation-delay: 0.3s; }
+        .role-card:nth-child(3) { animation-delay: 0.4s; }
+        .role-card:nth-child(4) { animation-delay: 0.5s; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .role-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: white;
+        }
+        .role-card i {
+            font-size: 3.5rem; margin-bottom: 15px;
+            display: block; transition: transform 0.4s ease;
+        }
+        .role-card:hover i { transform: scale(1.2) rotate(10deg); }
+        .role-card h3 { font-size: 1.4rem; margin-bottom: 8px; }
+        .role-card p { font-size: 0.9rem; opacity: 0.85; }
+        .role-card.student:hover { background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4)); }
+        .role-card.faculty:hover { background: linear-gradient(135deg, rgba(35, 213, 171, 0.4), rgba(35, 166, 213, 0.4)); }
+        .role-card.po:hover { background: linear-gradient(135deg, rgba(238, 119, 82, 0.4), rgba(231, 60, 126, 0.4)); }
+        .role-card.admin:hover { background: linear-gradient(135deg, rgba(240, 147, 251, 0.4), rgba(245, 87, 108, 0.4)); }
+        .footer-text {
+            margin-top: 40px; color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+        @media (max-width: 768px) {
+            .role-grid { grid-template-columns: 1fr; }
+            .title h1 { font-size: 1.8rem; }
+            .card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="card">
+            <i class="fas fa-graduation-cap logo-icon"></i>
+            <div class="title">
+                <h1>Smart Campus Portal</h1>
+                <p>Complaint Management System - College Version</p>
+            </div>
+
+            <div class="role-grid">
+                <a href="student-login.html" class="role-card student">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>Student</h3>
+                    <p>Submit complaints, track progress, take tests</p>
+                </a>
+                <a href="faculty-login.html" class="role-card faculty">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Faculty</h3>
+                    <p>Manage classes, resolve complaints, mark attendance</p>
+                </a>
+                <a href="po-login.html" class="role-card po">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Placement Officer</h3>
+                    <p>Manage placements, company drives, student records</p>
+                </a>
+                <a href="admin-login.html" class="role-card admin">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Admin</h3>
+                    <p>Full system control, user management, reports</p>
+                </a>
+            </div>
+
+            <p class="footer-text">
+                <i class="fas fa-lock"></i> Secure Login Portal | © 2026 Smart Campus
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>

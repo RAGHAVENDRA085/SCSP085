@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Officer Login - Smart Campus Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="static/js/api.js"></script>
+    <style>
+        * { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+        body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 20px; background: linear-gradient(135deg, #ee7752, #e73c7e, #764ba2); }
+        .card { width: min(100%, 440px); padding: 40px; border-radius: 24px; background: rgba(255,255,255,.96); box-shadow: 0 24px 64px rgba(0,0,0,.25); }
+        a { color: #764ba2; text-decoration: none; font-weight: 600; }
+        .back { display: inline-block; margin-bottom: 28px; }
+        .icon { display: block; text-align: center; font-size: 3.5rem; color: #764ba2; }
+        h1, .subtitle { text-align: center; }
+        h1 { margin-bottom: 8px; color: #292d36; }
+        .subtitle { margin: 0 0 28px; color: #687080; }
+        label { display: block; margin: 18px 0 7px; color: #404653; font-weight: 600; }
+        input { width: 100%; padding: 13px 14px; border: 1px solid #d9dce4; border-radius: 10px; font-size: 1rem; }
+        input:focus { outline: 3px solid rgba(118,75,162,.15); border-color: #764ba2; }
+        button { width: 100%; margin-top: 24px; padding: 14px; border: 0; border-radius: 10px; color: white; background: linear-gradient(135deg, #ee7752, #764ba2); font-size: 1rem; font-weight: 700; cursor: pointer; }
+        button:disabled { opacity: .65; cursor: wait; }
+        .note { margin: 18px 0 0; color: #687080; font-size: .9rem; text-align: center; }
+        .message { min-height: 22px; margin: 14px 0 0; text-align: center; color: #b42318; font-weight: 600; }
+        .success { color: #087443; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <a class="back" href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <i class="fas fa-briefcase icon"></i>
+        <h1>Placement Officer Login</h1>
+        <p class="subtitle">Manage campus recruitment and placement drives</p>
+        <form id="loginForm">
+            <label for="email">Work email</label>
+            <input id="email" type="email" autocomplete="username" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" autocomplete="current-password" required>
+            <button id="loginButton" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
+            <div id="message" class="message" role="alert"></div>
+        </form>
+        <p class="note">Placement Officer accounts are created by an administrator.</p>
+    </main>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const button = document.getElementById('loginButton');
+            const message = document.getElementById('message');
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            message.textContent = '';
+            message.className = 'message';
+            button.disabled = true;
+            try {
+                const result = await CampusAPI.request('/api/auth/login', {
+                    method: 'POST',
+                    body: { email, password, role: 'Placement Officer' }
+                });
+                localStorage.setItem('currentUser', JSON.stringify(result.user));
+                message.textContent = 'Login successful. Opening Placement Officer portal…';
+                message.classList.add('success');
+                setTimeout(() => { window.location.href = 'po-dashboard.html'; }, 250);
+            } catch (error) {
+                message.textContent = error.message || 'Login failed. Please check your email and password.';
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
